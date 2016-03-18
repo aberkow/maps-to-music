@@ -1,0 +1,17 @@
+{
+  "name": "maps-to-music",
+  "version": "1.0.0",
+  "description": "use the google maps api and tone.js to create sonification structures",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "maps",
+    "api",
+    "music",
+    "sound"
+  ],
+  "author": "Adam Berkowitz",
+  "license": "ISC"
+}
