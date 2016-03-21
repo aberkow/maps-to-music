@@ -1,11 +1,16 @@
-
-
 $(document).ready(function() {
+  //tester request 
+//  $.getJSON('http://www.mapquestapi.com/geocoding/v1/address?key=HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL&location=Lancaster,PA', function(data){
+//    var data = data.results;
+//    console.log(data);
+//  });
   
   $('#panel').on('submit', function(evt){
     var address = $('#address').val();
     evt.preventDefault();
+    //get the json data
     getRequest(address);
+    //code the address from the form
     geocode(address);
   });
 });
@@ -25,7 +30,7 @@ function geocode(address) {
 var getRequest = function(address){
   var request = {
     key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
-    locations: address
+    location: address
   };
   $.ajax({
     url: 'http://www.mapquestapi.com/geocoding/v1/address?',
@@ -34,7 +39,7 @@ var getRequest = function(address){
     type: "GET"
   })
   .done(function(result){
-    console.log(result);
+    console.log(result.results);
   })
   .fail(function(jqXHR, error){
     console.log(error);
@@ -56,10 +61,7 @@ var getRequest = function(address){
 //}
 
 
-// $.getJSON('http://www.mapquestapi.com/geocoding/v1/address?key=HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL&location=Lancaster,PA', function(data){
-//    var data = data.results;
-//    console.log(data);
-//  });
+
 
 
 
