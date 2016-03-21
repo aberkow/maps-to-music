@@ -13,5 +13,9 @@
     "sound"
   ],
   "author": "Adam Berkowitz",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "tone": "^0.6.1"
+  },
+  "devDependencies": {}
 }

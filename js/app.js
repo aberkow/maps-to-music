@@ -1,45 +1,67 @@
+
+
 $(document).ready(function() {
-  $('#panel').submit(function() {
-    //evt.preventDefault();
-    geoCodeAddress(geocoder, map);
-    console.log('click');
+  
+  $('#panel').on('submit', function(evt){
+    var address = $('#address').val();
+    evt.preventDefault();
+    getRequest(address);
+    geocode(address);
   });
 });
 
 
-var map;
-  
-  function initMap() {
-    var geocoder = new google.maps.Geocoder();
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -34.397, lng: 150.644},
-      zoom: 8
-    });
-    console.log(geocoder);
-    console.log(map);
-    console.log(initMap);
-    
-  } 
+//initialize a map
+var map = L.map('map', {
+  layers: MQ.mapLayer()
+});
 
-function geoCodeAddress(geocoder, resultsMap) {
-  var address = $('#address').value;
-  geocoder.geocode({'address': address}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-      resultsMap.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
-        map: resultsMap,
-        position: results[0].geometry.location
-      });
-      console.log(marker);
-    } else {
-      alert("Geocode unsuccessful because" + status);
-    }
+//geocode a location
+function geocode(address) {
+  MQ.geocode({map: map})
+  .search(address);
+}
+
+var getRequest = function(address){
+  var request = {
+    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
+    locations: address
+  };
+  $.ajax({
+    url: 'http://www.mapquestapi.com/geocoding/v1/address?',
+    data: request,
+    dataType: 'json',
+    type: "GET"
+  })
+  .done(function(result){
+    console.log(result);
+  })
+  .fail(function(jqXHR, error){
+    console.log(error);
   });
-  console.log(address);
-  
 }
 
 
-//$.getJSON('https://maps.googleapis.com/maps/api/directions/json?origin="185 West Ridge Dr., West Hartford, CT"&destination="2626 Albany Ave., West Hartford, CT"', function(data){
+//function getRequest(address){
+//  var params = {
+//    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
+//    locations: address
+//  } 
+//  url = 'http://www.mapquestapi.com/geocoding/v1/address?';
+//  
+//  $.getJSON(url, params, function(data){
+//    debugger;
+//    console.log(data);
+//  })
+//}
+
+
+// $.getJSON('http://www.mapquestapi.com/geocoding/v1/address?key=HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL&location=Lancaster,PA', function(data){
+//    var data = data.results;
 //    console.log(data);
 //  });
+
+
+
+
+
