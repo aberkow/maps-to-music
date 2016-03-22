@@ -56,8 +56,11 @@ var getRequest = function(address){
     console.log(result.results[0].locations[0].latLng.lng);
     //debugger;
     var lat = result.results[0].locations[0].latLng.lat;
+    var lng = result.results[0].locations[0].latLng.lng;
     //quickSynth(lat);
-    testSynth(lat);
+    //testSynth(lat);
+    //quickFMSynth(lat, lng);
+    polySynth(lat, lng);
     //debugger;
   })
   .fail(function(jqXHR, error){
@@ -84,6 +87,27 @@ var testSynth = function(freq){
   synth.triggerAttackRelease(freq, '2n');
 }
 
+var quickFMSynth = function(freq1, freq2){
+  var synth = new Tone.FMSynth({
+    carrier: {
+      filterEnvelope: {baseFrequency: freq1}
+    },
+    modulator: {
+      filterEnvelope: {baseFrequency: freq2}
+    }
+  }).toMaster();
+  synth.triggerAttackRelease("c4", "2n");
+}
+
+var polySynth = function(freq1, freq2){
+  var synth = new Tone.PolySynth(2, Tone.MonoSynth).toMaster();
+  synth.triggerAttackRelease([freq1, freq2], '2n');
+}
+    
+    
+    
+    
+    
 
 
 
