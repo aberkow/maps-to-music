@@ -54,9 +54,11 @@ var getRequest = function(address){
   .done(function(result){
     console.log(result.results[0].locations[0].latLng.lat);
     console.log(result.results[0].locations[0].latLng.lng);
-    debugger;
+    //debugger;
     var lat = result.results[0].locations[0].latLng.lat;
-    quickSynth(lat);
+    //quickSynth(lat);
+    testSynth(lat);
+    //debugger;
   })
   .fail(function(jqXHR, error){
     console.log(error);
@@ -68,21 +70,19 @@ var quickSynth = function(freq){
   synth.triggerAttackRelease(freq, '8n');               
   }
 
-
-
-//function getRequest(address){
-//  var params = {
-//    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
-//    locations: address
-//  } 
-//  url = 'http://www.mapquestapi.com/geocoding/v1/address?';
-//  
-//  $.getJSON(url, params, function(data){
-//    debugger;
-//    console.log(data);
-//  })
-//}
-
+var testSynth = function(freq){
+  var synth = new Tone.SimpleSynth({
+    oscillator: {type: 'square'},
+    envelope: {
+      attack: 0.005,
+      decay: 0.1,
+      sustain: 0.3,
+      release: 1
+    }
+  })
+  .toMaster();
+  synth.triggerAttackRelease(freq, '2n');
+}
 
 
 
