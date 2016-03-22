@@ -19,9 +19,12 @@ $(document).ready(function() {
   $('.tone').on('click', function() {
     var synth = new Tone.SimpleSynth().toMaster();
     var loop = new Tone.Loop(function(time){
-    synth.triggerAttackRelease(, "8n", time); 
+    synth.triggerAttackRelease("C4", "8n", time); 
     console.log(time);
   }, "4n");
+  loop.start("1m").stop("4m");
+  
+  Tone.Transport.start();
   });
 });
 
@@ -50,13 +53,21 @@ var getRequest = function(address){
   })
   .done(function(result){
     console.log(result.results[0].locations[0].latLng.lat);
-    console.log(result.results[0].locations[0].latLng.Lng);
+    console.log(result.results[0].locations[0].latLng.lng);
     debugger;
+    var lat = result.results[0].locations[0].latLng.lat;
+    quickSynth(lat);
   })
   .fail(function(jqXHR, error){
     console.log(error);
   });
 }
+
+var quickSynth = function(freq){
+  var synth = new Tone.SimpleSynth().toMaster();
+  synth.triggerAttackRelease(freq, '8n');               
+  }
+
 
 
 //function getRequest(address){
