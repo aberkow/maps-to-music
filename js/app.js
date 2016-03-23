@@ -28,12 +28,16 @@ $(document).ready(function() {
   });
   
   map.on('click', onMapClick);
+  
+  getDirections('West Hartford, CT', 'Boston, MA');
 });
 
 
 //initialize a map
 var map = L.map('map', {
-  layers: MQ.mapLayer()
+  layers: MQ.mapLayer(),
+  center: [51.505, -0.09],
+  zoom: 5
 });
 
 //geocode a location
@@ -54,7 +58,7 @@ var getRequest = function(address){
     type: "GET"
   })
   .done(function(result){
-    console.log(result.results[0].locations[0].latLng.lat);
+   console.log(result.results[0].locations[0]); console.log(result.results[0].locations[0].latLng.lat);
     console.log(result.results[0].locations[0].latLng.lng);
     //debugger;
     var lat = result.results[0].locations[0].latLng.lat;
@@ -64,6 +68,27 @@ var getRequest = function(address){
     //quickFMSynth(lat, lng);
     polySynth(lat, lng);
     //debugger;
+  })
+  .fail(function(jqXHR, error){
+    console.log(error);
+  });
+}
+
+//function to get directions. returns json obj access @ results.route etc
+var getDirections = function(address1, address2){
+  var request = {
+    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
+    from: address1,
+    to: address2
+  };
+  $.ajax({
+    url:'http://www.mapquestapi.com/directions/v2/route?',
+    data: request,
+    dataType: 'JSON',
+    type: 'GET'
+  })
+  .done(function(result){
+    console.log(result);
   })
   .fail(function(jqXHR, error){
     console.log(error);
