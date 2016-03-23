@@ -8,9 +8,11 @@
 var marker = L.marker();
 var time;
 var dirToSound = {
-  timeArr: [],
-  latArr: [],
-  lngArr: [] 
+  steps: undefined,
+  timeArr: [], //becomes time argument in polysynth/part
+  latArr: [], //becomes freq1 in polysynth
+  lngArr: [],  //becomes freq2 in polysynth
+  toneJSInstructionsArr: [] //the nested array to pass to part
 }
 
 $(document).ready(function() {
@@ -67,10 +69,37 @@ function geocode(address) {
 function timeStringToMS(time){
   var timeArr = time.split(':');
   var timeString = timeArr[0].concat(timeArr[1]).concat(timeArr[2]);
-  var timeInt = parseInt(timeString, 10);
+  var timeInt = parseInt(timeString, 10) / 1000;
   //debugger;   
   //console.log(timeInt);
   return timeInt;
+}
+
+function formatDirToSound() {
+  //create a nested array from the dirToSound obj to pass to Tone.Part
+  var timeLatCoordinates = [];
+  for (var i = 0; i < dirToSound.steps; i++){
+    var timeLatCoordinateObj = {
+      time: dirToSound.timeArr[i],
+      lat: dirToSound.latArr[i]
+    };
+    //dirToSound.formattedArr.push(parseFloat(dirToSound.timeArr[i]) + ', ' + parseFloat(dirToSound.latArr[i]));
+    timeLatCoordinates.push(timeLatCoordinateObj);
+  }
+  dirToSound.toneJSInstructionsArr.push(timeLatCoordinates);
+  //dirToSound.formattedArr.push(timeLatCoordinates);
+  return dirToSound.toneJSInstructionsArr;
+}
+
+// MIDI info is in steps btwn 0 - 127
+function convertLatToMIDINote(lat) {
+  //add if statement to validate input
+  //return parseInt((parseInt(lat, 10) + 90) * 127 / 180);  
+  return 
+}
+
+function convertLngToMIDINote(lng) {
+  //return parseInt((parseInt(lng, 10) + 180) * 127 / 360);
 }
 /*get function*/
 
@@ -89,6 +118,7 @@ var getDirections = function(address1, address2){
   })
   .done(function(result){
     console.log(result.route.legs[0]);
+    dirToSound.steps = result.route.legs[0].maneuvers.length;
     for (var i = 0; i < result.route.legs[0].maneuvers.length; i++) {
       dirToSound.latArr.push(result.route.legs[0].maneuvers[i].startPoint.lat);
       dirToSound.lngArr.push(result.route.legs[0].maneuvers[i].startPoint.lng);
@@ -137,6 +167,12 @@ var polySynth = function(freq1, freq2){
   synth.triggerAttackRelease([freq1, freq2], '2n');
 }
 
+var playDirections = function(){
+  var synth = new Tone.SimpleSynth.toMaster();
+  var part = new Tone.Part(function(time, note){
+    synth.triggerAttackRelease(note, "8n", time);
+  })
+}
 
 //var getRequest = function(address){
 //  var request = {
