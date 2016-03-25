@@ -17,16 +17,24 @@ var dirToSound = {
 }
 
 $(document).ready(function() {
- 
-  L.marker([50.5, 30.5]).addTo(map);
+  //tester to add a marker to the map.
+  //L.marker([50.5, 30.5]).addTo(map);
   $('#panel').on('submit', function(evt){
-    var address = $('#address').val();
+    var address1 = $('#address1').val();
+    var address2 = $('#address2').val();
     evt.preventDefault();
     //get the json data
-    getRequest(address);
+    //getRequest(address);
+    getDirections(address1, address2);
+    //routeLine(routeLineArr); trouble showing the line at this point. 
+    //console complains of uncaught typeError
+    //but I can call it separately after everything is loaded......
+    
     //code the address from the form
-    geocode(address);
+    //geocode(address);
   });
+  
+  
   //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
     var synth = new Tone.SimpleSynth().toMaster();
@@ -41,7 +49,7 @@ $(document).ready(function() {
   
   map.on('click', onMapClick);
   
-  getDirections('West Hartford, CT', 'Boston, MA');
+  //getDirections('West Hartford, CT', 'Boston, MA');
 });
 
 /*map functions*/
@@ -62,12 +70,13 @@ function geocode(address) {
 function routeLine(routeLineArr){
   var startMarker = L.marker(routeLineArr[0]);
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
-  var polyLine = L.polyline(routeLineArr, {color: 'red'}).addTo(map);
-  debugger;
+  //try to find a way to implement smoothFactor option currently not working.
+  var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 0}).addTo(map);
+  //debugger;
   startMarker.addTo(map);
-  debugger;
+  //debugger;
   endMarker.addTo(map);
-  debugger;
+  //debugger;
   map.fitBounds(polyLine.getBounds());  
 }
 
