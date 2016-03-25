@@ -7,6 +7,7 @@
 
 var marker = L.marker();
 var time;
+var routeLineArr = [];
 var dirToSound = {
   steps: undefined,
   timeArr: [], //becomes time argument in polysynth/part
@@ -47,8 +48,8 @@ $(document).ready(function() {
 //initialize a map
 var map = L.map('map', {
   layers: MQ.mapLayer(),
-  center: [51.505, -0.09],
-  zoom: 5
+  center: [0, 0],
+  zoom: 1
 });
 
 //geocode a location
@@ -57,7 +58,20 @@ function geocode(address) {
   .search(address);
 }
 
-//mouseEventToLatLng  - Returns the geographical coordinates of the point the mouse clicked on given the cl ick's event object.
+//plot the route as a line with markers at beginning and end.
+function routeLine(routeLineArr){
+  var startMarker = L.marker(routeLineArr[0]);
+  var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
+  var polyLine = L.polyline(routeLineArr, {color: 'red'}).addTo(map);
+  debugger;
+  startMarker.addTo(map);
+  debugger;
+  endMarker.addTo(map);
+  debugger;
+  map.fitBounds(polyLine.getBounds());  
+}
+
+//mouseEventToLatLng  - Returns the geographical coordinates of the point the mouse clicked on given the click's event object.
   function onMapClick(evt){
     console.log('a click! ' + evt.latlng);
     marker
@@ -93,13 +107,19 @@ function formatDirToSound() {
 
 // MIDI info is in steps btwn 0 - 127
 function convertLatToMIDINote(lat) {
-  //add if statement to validate input
-  //return parseInt((parseInt(lat, 10) + 90) * 127 / 180);  
-  return 
+  if (lat >= -90.0 && lat <= 90.0) {
+    return parseInt((parseInt(lat, 10) + 90) / 180 * 127);
+  } else {
+    console.log('Please enter a number between -90 and 90');
+  } 
 }
 
 function convertLngToMIDINote(lng) {
-  //return parseInt((parseInt(lng, 10) + 180) * 127 / 360);
+  if (lng >= -180.0 && lng <= 180.0) {
+    return parseInt((parseInt(lng, 10) + 180) / 360 * 127);
+  } else {
+    console.log('Please enter a number between -180.0 and 180.0');
+  }  
 }
 /*get function*/
 
@@ -120,6 +140,7 @@ var getDirections = function(address1, address2){
     console.log(result.route.legs[0]);
     dirToSound.steps = result.route.legs[0].maneuvers.length;
     for (var i = 0; i < result.route.legs[0].maneuvers.length; i++) {
+      routeLineArr.push(result.route.legs[0].maneuvers[i].startPoint);
       dirToSound.latArr.push(result.route.legs[0].maneuvers[i].startPoint.lat);
       dirToSound.lngArr.push(result.route.legs[0].maneuvers[i].startPoint.lng);
       dirToSound.timeArr.push(timeStringToMS(result.route.legs[0].maneuvers[i].formattedTime));
