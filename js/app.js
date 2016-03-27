@@ -6,14 +6,16 @@
 //  });
 
 var marker = L.marker();
+var test = [[0,1], [2, 3], [4,5]]
 var time;
-var routeLineArr = [];
+var routeLineArr = [];//array of points for the route line overlay
 var dirToSound = {
   steps: undefined,
   timeArr: [], //becomes time argument in polysynth/part
   latArr: [], //becomes freq1 in polysynth
   lngArr: [],  //becomes freq2 in polysynth
-  toneJSInstructionsArr: [] //the nested array to pass to part
+  timeLatToneJSInstructionsArr: [], //the nested array to pass to part
+  timeLngToneJSInstructionsArr: []
 }
 
 $(document).ready(function() {
@@ -24,27 +26,62 @@ $(document).ready(function() {
     var address2 = $('#address2').val();
     evt.preventDefault();
     //get the json data
-    //getRequest(address);
     getDirections(address1, address2);
-    //routeLine(routeLineArr); trouble showing the line at this point. 
+    //formatDirToSound();
+    //routeLine(routeLineArr); //trouble showing the line at this point. 
     //console complains of uncaught typeError
     //but I can call it separately after everything is loaded......
-    
-    //code the address from the form
-    //geocode(address);
   });
-  
   
   //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
-    var synth = new Tone.SimpleSynth().toMaster();
-    var loop = new Tone.Loop(function(time){
-    synth.triggerAttackRelease("C4", "8n", time); 
-    console.log(time);
-  }, "4n");
-  loop.start("1m").stop("4m");
+    formatDirToSound();
+    debugger;
+    var synth1 = new Tone.SimpleSynth().toMaster();
+    //var pan1 = new Tone.Panner(0.25).toMaster();
+    var synth2 = new Tone.SimpleSynth().toMaster();
+    //var pan2 = new Tone.Panner(0.75).toMaster();
+    
+    /*****Figure out how to remake the dirToSound.time.... Arrays into an array of arrays, not an array of objects*************/
+
+    var part1 = new Tone.Part(function(time, note){
+      synth1.triggerAttackRelease(note, '8n', time);
+    }, dirToSound.timeLatToneJSInstructionsArr);
   
-  Tone.Transport.start();
+    var part2 = new Tone.Part(function(time, note){
+      synth2.triggerAttackRelease(note, '8n', time);
+    }, dirToSound.timeLngToneJSInstructionsArr);
+    
+//    var part1 = new Tone.Part(function(time, note){
+//      synth1.triggerAttackRelease(note, '8n', time);
+//    }, [[0, 220], [0.5, 440], [1, 880]]);
+//  
+//    var part2 = new Tone.Part(function(time, note){
+//      synth2.triggerAttackRelease(note, '8n', time);
+//    }, [[0, 330], [0.5, 600], [1, 1000]]);
+    part1.start();
+    part2.start();
+//    var oscSynth = function(freq1, freq2){
+//      var osc1 = new Tone.Oscillator(freq1, square).connect(pan1);
+//      var osc2 = new Tone.Oscillator(freq2, sine).connect(pan2);
+//      var pan1 = new Tone.Panner(0.25).toMaster();
+//      var pan2 = new Tone.Panner(0.75).toMaster();
+//    }
+//    var part = new Tone.Part(function(time, note1, note2){
+//      oscSynth.triggerAttackRelease(note1, note2, '8n', time);
+//    }, [[0, [220, 330]], [0.5, [440, 600]], [ 1, [880, 1000]]]);
+//    part.start();
+    Tone.Transport.start();
+    
+    
+//    var synth = new Tone.SimpleSynth().toMaster();
+//    var loop = new Tone.Loop(function(time){
+//    synth.triggerAttackRelease("C4", "8n", time); 
+//    console.log(time);
+//  }, "4n");
+//  loop.start("1m").stop("4m");
+//  
+//  Tone.Transport.start();
   });
   
   map.on('click', onMapClick);
@@ -71,7 +108,7 @@ function routeLine(routeLineArr){
   var startMarker = L.marker(routeLineArr[0]);
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
   //try to find a way to implement smoothFactor option currently not working.
-  var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 0}).addTo(map);
+  var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0}).addTo(map);
   //debugger;
   startMarker.addTo(map);
   //debugger;
@@ -92,26 +129,32 @@ function routeLine(routeLineArr){
 function timeStringToMS(time){
   var timeArr = time.split(':');
   var timeString = timeArr[0].concat(timeArr[1]).concat(timeArr[2]);
-  var timeInt = parseInt(timeString, 10) / 1000;
+  var timeInt = parseInt(timeString, 10) / 100;
   //debugger;   
   //console.log(timeInt);
   return timeInt;
 }
 
 function formatDirToSound() {
-  //create a nested array from the dirToSound obj to pass to Tone.Part
+  //create nested arrays from the dirToSound obj to pass to Tone.Part
   var timeLatCoordinates = [];
+  var timeLngCoordinates = [];
   for (var i = 0; i < dirToSound.steps; i++){
     var timeLatCoordinateObj = {
       time: dirToSound.timeArr[i],
-      lat: dirToSound.latArr[i]
+      lat: dirToSound.latArr[i],
     };
-    //dirToSound.formattedArr.push(parseFloat(dirToSound.timeArr[i]) + ', ' + parseFloat(dirToSound.latArr[i]));
+    var timeLngCoordinateObj = {
+      time: dirToSound.timeArr[i],
+      lng: dirToSound.lngArr[i]
+    }
     timeLatCoordinates.push(timeLatCoordinateObj);
-  }
-  dirToSound.toneJSInstructionsArr.push(timeLatCoordinates);
-  //dirToSound.formattedArr.push(timeLatCoordinates);
-  return dirToSound.toneJSInstructionsArr;
+    timeLngCoordinates.push(timeLngCoordinateObj);
+  };
+  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates);
+  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates);
+  return dirToSound.timeLatToneJSInstructionsArr;
+  return dirToSound.timeLngToneJSInstructionsArr;
 }
 
 // MIDI info is in steps btwn 0 - 127
@@ -133,7 +176,7 @@ function convertLngToMIDINote(lng) {
 /*get function*/
 
 //function to get directions. returns json obj access @ results.route etc
-var getDirections = function(address1, address2){
+function getDirections(address1, address2){
   var request = {
     key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
     from: address1,
@@ -148,11 +191,13 @@ var getDirections = function(address1, address2){
   .done(function(result){
     console.log(result.route.legs[0]);
     dirToSound.steps = result.route.legs[0].maneuvers.length;
-    for (var i = 0; i < result.route.legs[0].maneuvers.length; i++) {
+    for (var i = 0; i < result.route.legs[0].maneuvers.length; i++){
       routeLineArr.push(result.route.legs[0].maneuvers[i].startPoint);
       dirToSound.latArr.push(result.route.legs[0].maneuvers[i].startPoint.lat);
       dirToSound.lngArr.push(result.route.legs[0].maneuvers[i].startPoint.lng);
       dirToSound.timeArr.push(timeStringToMS(result.route.legs[0].maneuvers[i].formattedTime));
+      routeLine(routeLineArr); 
+      //formatDirToSound();
     }
   })
   .fail(function(jqXHR, error){
@@ -161,12 +206,12 @@ var getDirections = function(address1, address2){
 }
 
 /*sound functions*/
-var quickSynth = function(freq){
+function quickSynth(freq){
   var synth = new Tone.SimpleSynth().toMaster();
   synth.triggerAttackRelease(freq, '8n');               
   }
 
-var testSynth = function(freq){
+function testSynth(freq){
   var synth = new Tone.SimpleSynth({
     oscillator: {type: 'square'},
     envelope: {
@@ -180,7 +225,7 @@ var testSynth = function(freq){
   synth.triggerAttackRelease(freq, '2n');
 }
 
-var quickFMSynth = function(freq1, freq2){
+function quickFMSynth(freq1, freq2){
   var synth = new Tone.FMSynth({
     carrier: {
       filterEnvelope: {baseFrequency: freq1}
@@ -192,12 +237,12 @@ var quickFMSynth = function(freq1, freq2){
   synth.triggerAttackRelease("c4", "2n");
 }
 
-var polySynth = function(freq1, freq2){
+function polySynth(freq1, freq2){
   var synth = new Tone.PolySynth(2, Tone.FMSynth).toMaster();
   synth.triggerAttackRelease([freq1, freq2], '2n');
 }
 
-var playDirections = function(){
+function playDirections(){
   var synth = new Tone.SimpleSynth.toMaster();
   var part = new Tone.Part(function(time, note){
     synth.triggerAttackRelease(note, "8n", time);
