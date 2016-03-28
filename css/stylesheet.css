@@ -1,9 +1,58 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+}
+
 html, body {
   height: 100%;
   margin: 0;
-  padding: 0;
+  //padding: 0;
+  background-color: lightgrey;
 }
+
+.header__title {
+  text-align: center;
+}
+
+.header__title-text {
+  font-size: 4rem;
+  font-family: 'Hind Siliguri', sans-serif;
+  margin: 0 auto;
+  color: black;
+  opacity: 0.6;
+}
+
+.header__title-subtext {
+  font-size: 3rem;
+  font-family: 'Hind Siliguri', sans-serif;
+  margin: 0 auto;
+  color: black;
+  opacity: 0.5;
+}
+
+#panel {
+  margin-bottom: 2rem;
+  margin-left: 2rem;
+  display: inline-block;
+}
+
+#address2 {
+  margin: 0 1rem;
+}
+
+.controls {
+  display: inline-block;
+}
+.tone {
+  margin-top: 2rem;
+  margin-left: 2rem;
+  color: black;
+  opacity: 0.6;
+  font-size: 2rem;
+}
+
 #map {
-  height: 320px;
-  width: 480px;
+  height: 25rem;
+  width: 100%;
 }
+

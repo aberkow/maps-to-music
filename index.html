@@ -5,20 +5,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Hind+Siliguri' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/stylesheet.css">
   <title>Maps to Music</title>
 
 </head>
-<body>
-  <form id="panel">
-    <input type="text" id="address1">
-    <input type="text" id="address2">
-    <input type="submit" id="submit">
-  </form>
-<div id="map"></div>
-<button class="tone">Play tone</button>
+ <body>
+  <header class="header">
+  <div class="header__title">
+    <p class="header__title-text">
+      Maps to Music
+    </p>
+    <p class="header__title-subtext">
+      Hear where you're going.
+    </p>
+  </div>    
+  </header>
+   <section class="main">
+     <form id="panel">
+      <input type="text" id="address1" placeholder="From">
+      <input type="text" id="address2" placeholder="To">
+      <input type="submit" id="submit">
+    </form> 
+  <div class="controls"><i class="material-icons tone">play_arrow
+</i></div>
+ <div id="map"></div>
+  
+  
+   <footer class="footer">
+    
+  </footer>
+  </section>
+   
+
 
 
 <!--
