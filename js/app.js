@@ -62,7 +62,7 @@ $(document).ready(function() {
     dirToSound.timeArr = [];
     dirToSound.timeLatToneJSInstructionsArr = [];
     dirToSound.timeLngToneJSInstructionsArr = [];
-  })
+  });
   //map.on('click', onMapClick);
 
 });
@@ -111,10 +111,16 @@ function timeStringToMS(time){
 }
 
 function formatDirToSound() {
+  /*
+  This function takes two arrays and interleaves them to produce a new array - [1, 2, 3, 4].....[a, b, c, d]......[1,a,2,b,3,c,4,d]
+  Then the array is split into groups of 2 and pushed to "Instructions"
+  [[1,a], [2,b].... ]
+  */
   //interleave the time and Lat arrays so they alternate
   var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
     return [value, dirToSound.latArr[index]];
   });
+  
   var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
     return [value, dirToSound.lngArr[index]];
   });
