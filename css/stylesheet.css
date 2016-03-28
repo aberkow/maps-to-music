@@ -43,13 +43,16 @@ html, body {
 .controls {
   display: inline-block;
 }
-.tone {
+.tone, .reload {
+/*
   margin-top: 2rem;
   margin-left: 2rem;
+*/
   color: black;
   opacity: 0.6;
   font-size: 2rem;
 }
+
 
 #map {
   height: 25rem;
