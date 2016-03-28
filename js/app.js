@@ -6,7 +6,6 @@
 //  });
 
 var marker = L.marker();
-var test = [[0,1], [2, 3], [4,5]]
 var time;
 var routeLineArr = [];//array of points for the route line overlay
 var dirToSound = {
