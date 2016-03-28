@@ -36,57 +36,27 @@ $(document).ready(function() {
   //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
     formatDirToSound();
-    debugger;
+    //debugger;
     var synth1 = new Tone.SimpleSynth().toMaster();
     //var pan1 = new Tone.Panner(0.25).toMaster();
     var synth2 = new Tone.SimpleSynth().toMaster();
     //var pan2 = new Tone.Panner(0.75).toMaster();
-    
-    /*****Figure out how to remake the dirToSound.time.... Arrays into an array of arrays, not an array of objects*************/
 
     var part1 = new Tone.Part(function(time, note){
-      synth1.triggerAttackRelease(note, '8n', time);
-    }, dirToSound.timeLatToneJSInstructionsArr);
+      synth1.triggerAttackRelease(note, '16n', time);
+    }, dirToSound.timeLatToneJSInstructionsArr[0]);
   
     var part2 = new Tone.Part(function(time, note){
-      synth2.triggerAttackRelease(note, '8n', time);
-    }, dirToSound.timeLngToneJSInstructionsArr);
+      synth2.triggerAttackRelease(note, '16n', time);
+    }, dirToSound.timeLngToneJSInstructionsArr[0]);
     
-//    var part1 = new Tone.Part(function(time, note){
-//      synth1.triggerAttackRelease(note, '8n', time);
-//    }, [[0, 220], [0.5, 440], [1, 880]]);
-//  
-//    var part2 = new Tone.Part(function(time, note){
-//      synth2.triggerAttackRelease(note, '8n', time);
-//    }, [[0, 330], [0.5, 600], [1, 1000]]);
     part1.start();
     part2.start();
-//    var oscSynth = function(freq1, freq2){
-//      var osc1 = new Tone.Oscillator(freq1, square).connect(pan1);
-//      var osc2 = new Tone.Oscillator(freq2, sine).connect(pan2);
-//      var pan1 = new Tone.Panner(0.25).toMaster();
-//      var pan2 = new Tone.Panner(0.75).toMaster();
-//    }
-//    var part = new Tone.Part(function(time, note1, note2){
-//      oscSynth.triggerAttackRelease(note1, note2, '8n', time);
-//    }, [[0, [220, 330]], [0.5, [440, 600]], [ 1, [880, 1000]]]);
-//    part.start();
     Tone.Transport.start();
-    
-    
-//    var synth = new Tone.SimpleSynth().toMaster();
-//    var loop = new Tone.Loop(function(time){
-//    synth.triggerAttackRelease("C4", "8n", time); 
-//    console.log(time);
-//  }, "4n");
-//  loop.start("1m").stop("4m");
-//  
-//  Tone.Transport.start();
   });
   
   map.on('click', onMapClick);
-  
-  //getDirections('West Hartford, CT', 'Boston, MA');
+
 });
 
 /*map functions*/
@@ -109,11 +79,8 @@ function routeLine(routeLineArr){
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
   //try to find a way to implement smoothFactor option currently not working.
   var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0}).addTo(map);
-  //debugger;
   startMarker.addTo(map);
-  //debugger;
   endMarker.addTo(map);
-  //debugger;
   map.fitBounds(polyLine.getBounds());  
 }
 
@@ -129,32 +96,31 @@ function routeLine(routeLineArr){
 function timeStringToMS(time){
   var timeArr = time.split(':');
   var timeString = timeArr[0].concat(timeArr[1]).concat(timeArr[2]);
-  var timeInt = parseInt(timeString, 10) / 100;
+  var timeInt = parseInt(timeString, 10) / 1000;
   //debugger;   
   //console.log(timeInt);
   return timeInt;
 }
 
 function formatDirToSound() {
-  //create nested arrays from the dirToSound obj to pass to Tone.Part
-  var timeLatCoordinates = [];
-  var timeLngCoordinates = [];
-  for (var i = 0; i < dirToSound.steps; i++){
-    var timeLatCoordinateObj = {
-      time: dirToSound.timeArr[i],
-      lat: dirToSound.latArr[i],
-    };
-    var timeLngCoordinateObj = {
-      time: dirToSound.timeArr[i],
-      lng: dirToSound.lngArr[i]
+  //interleave the time and Lat arrays so they alternate
+  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
+    return [value, dirToSound.latArr[index]];
+  });
+  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
+    return [value, dirToSound.lngArr[index]];
+  });
+  //Chunk every 2 elements in the large array and push them in to "Instructions" 
+  Array.prototype.chunk = function(number){
+    if (!this.length){
+      return [];
     }
-    timeLatCoordinates.push(timeLatCoordinateObj);
-    timeLngCoordinates.push(timeLngCoordinateObj);
-  };
-  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates);
-  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates);
-  return dirToSound.timeLatToneJSInstructionsArr;
-  return dirToSound.timeLngToneJSInstructionsArr;
+    //debugger;
+    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
+  }
+  //push the chunked arrays to "Instructions"
+  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
+  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
 }
 
 // MIDI info is in steps btwn 0 - 127
