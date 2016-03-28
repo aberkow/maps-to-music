@@ -54,7 +54,16 @@ $(document).ready(function() {
     Tone.Transport.start();
   });
   
-  map.on('click', onMapClick);
+  $('.reload').on('click', function(){
+    routeLineArr = [];
+    dirToSound.steps = undefined;
+    dirToSound.latArr = [];
+    dirToSound.lngArr = [];
+    dirToSound.timeArr = [];
+    dirToSound.timeLatToneJSInstructionsArr = [];
+    dirToSound.timeLngToneJSInstructionsArr = [];
+  })
+  //map.on('click', onMapClick);
 
 });
 
