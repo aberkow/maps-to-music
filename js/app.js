@@ -77,8 +77,8 @@ function geocode(address) {
 function routeLine(routeLineArr){
   var startMarker = L.marker(routeLineArr[0]);
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
-  //try to find a way to implement smoothFactor option currently not working.
   var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0}).addTo(map);
+  //find a way to add other markers back to map.
   startMarker.addTo(map);
   endMarker.addTo(map);
   map.fitBounds(polyLine.getBounds());  
@@ -111,6 +111,7 @@ function formatDirToSound() {
     return [value, dirToSound.lngArr[index]];
   });
   //Chunk every 2 elements in the large array and push them in to "Instructions" 
+  //confirm what this means.....
   Array.prototype.chunk = function(number){
     if (!this.length){
       return [];
@@ -162,9 +163,8 @@ function getDirections(address1, address2){
       dirToSound.latArr.push(result.route.legs[0].maneuvers[i].startPoint.lat);
       dirToSound.lngArr.push(result.route.legs[0].maneuvers[i].startPoint.lng);
       dirToSound.timeArr.push(timeStringToMS(result.route.legs[0].maneuvers[i].formattedTime));
-      routeLine(routeLineArr); 
-      //formatDirToSound();
     }
+    routeLine(routeLineArr);
   })
   .fail(function(jqXHR, error){
     console.log(error);
