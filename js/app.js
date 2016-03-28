@@ -116,6 +116,14 @@ function formatDirToSound() {
   Then the array is split into groups of 2 and pushed to "Instructions"
   [[1,a], [2,b].... ]
   */
+  function mixArrays(array1, array2){
+    if(array1.length !== array2.length){
+      throw new Error('Arrays are not the same length.')
+    } 
+    return array1.map(function(currentValue, index){
+      return [currentValue, array2[index]];
+    });
+  }
   //interleave the time and Lat arrays so they alternate
 //  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
 //    return [value, dirToSound.latArr[index]];
@@ -127,14 +135,7 @@ function formatDirToSound() {
   //Chunk every 2 elements in the large array and push them in to "Instructions" 
   //confirm what this means.....
   //mix two arrays and return the result
-  function mixArrays(array1, array2){
-    if(array1.length !== array2.length){
-      throw new Error('Arrays are not the same length.')
-    } 
-    return array1.map(function(currentValue, index){
-      return [currentValue, array2[index]];
-    });
-  }
+  
   
 //  Array.prototype.chunk = function(number){
 //    if (!this.length){
