@@ -34,7 +34,9 @@ $(document).ready(function() {
   
   //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
-    formatDirToSound();
+    mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
+    mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
+    //formatDirToSound();
     //debugger;
     var synth1 = new Tone.SimpleSynth().toMaster();
     //var pan1 = new Tone.Panner(0.25).toMaster();
@@ -54,7 +56,7 @@ $(document).ready(function() {
     Tone.Transport.start();
   });
   
-  $('.reload').on('click', function(){
+  $('.reset').on('click', function(){
     routeLineArr = [];
     dirToSound.steps = undefined;
     dirToSound.latArr = [];
@@ -110,40 +112,43 @@ function timeStringToMS(time){
   return timeInt;
 }
 
-function formatDirToSound() {
-  /*
+/*
   This function takes two arrays and interleaves them to produce a new array - [1, 2, 3, 4].....[a, b, c, d]......[1,a,2,b,3,c,4,d]
   Then the array is split into groups of 2 and pushed to "Instructions"
   [[1,a], [2,b].... ]
-  */
-  function mixArrays(array1, array2){
-    if(array1.length !== array2.length){
-      throw new Error('Arrays are not the same length.')
-    } 
-    return array1.map(function(currentValue, index){
-      return [currentValue, array2[index]];
-    });
-  }
+*/
+function mixArrays(array1, array2, destinationArray){
+  if(array1.length !== array2.length){
+    throw new Error('Arrays are not the same length.')
+  } 
+  return array1.map(function(currentValue, index){
+    destinationArray.push([currentValue, array2[index]]);
+    return [currentValue, array2[index]];
+  });
+}
+
+function formatDirToSound() {
+  
   //interleave the time and Lat arrays so they alternate
-//  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
-//    return [value, dirToSound.latArr[index]];
-//  });
-//  
-//  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
-//    return [value, dirToSound.lngArr[index]];
-//  });
+  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
+    return [value, dirToSound.latArr[index]];
+  });
+  
+  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
+    return [value, dirToSound.lngArr[index]];
+  });
   //Chunk every 2 elements in the large array and push them in to "Instructions" 
   //confirm what this means.....
   //mix two arrays and return the result
   
   
-//  Array.prototype.chunk = function(number){
-//    if (!this.length){
-//      return [];
-//    }
-//    //debugger;
-//    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
-//  }
+  Array.prototype.chunk = function(number){
+    if (!this.length){
+      return [];
+    }
+    //debugger;
+    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
+  }
   //push the chunked arrays to "Instructions"
   dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
   dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
