@@ -159,7 +159,6 @@ function formatDirToSound() {
 
 // MIDI info is in steps btwn 0 - 127
 
-
 function convertLatToMIDINote(lat) {
   if (lat >= -90.0 && lat <= 90.0) {
     return parseInt((parseInt(lat, 10) + 90) / 180 * 127);
