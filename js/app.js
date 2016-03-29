@@ -24,19 +24,14 @@ $(document).ready(function() {
     var address1 = $('#address1').val();
     var address2 = $('#address2').val();
     evt.preventDefault();
-    //get the json data
     getDirections(address1, address2);
-    //formatDirToSound();
-    //routeLine(routeLineArr); //trouble showing the line at this point. 
-    //console complains of uncaught typeError
-    //but I can call it separately after everything is loaded......
   });
   
   //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
     mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
     mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
-    //debugger;
+    
     var synth1 = new Tone.SimpleSynth().toMaster();
     //var pan1 = new Tone.Panner(0.25).toMaster();
     var synth2 = new Tone.SimpleSynth().toMaster();
@@ -49,18 +44,10 @@ $(document).ready(function() {
     var part2 = new Tone.Part(function(time, note){
       synth2.triggerAttackRelease(note, '16n', time);
     }, dirToSound.timeLngToneJSInstructionsArr);
+    
     part1.start();
     part2.start();
     Tone.Transport.start();
-//these go together (use timeLat...[0] w formatDir)...
-    //formatDirToSound();    
-//    var part1 = new Tone.Part(function(time, note){
-//      synth1.triggerAttackRelease(note, '16n', time);
-//    }, dirToSound.timeLatToneJSInstructionsArr[0]);
-//  
-//    var part2 = new Tone.Part(function(time, note){
-//      synth2.triggerAttackRelease(note, '16n', time);
-//    }, dirToSound.timeLngToneJSInstructionsArr[0]);
   });
   
   $('.reset').on('click', function(){
@@ -73,6 +60,7 @@ $(document).ready(function() {
     dirToSound.timeArr = [];
     dirToSound.timeLatToneJSInstructionsArr = [];
     dirToSound.timeLngToneJSInstructionsArr = [];
+    
   });
   //map.on('click', onMapClick);
 
@@ -190,7 +178,6 @@ function getDirections(address1, address2){
     type: 'GET'
   })
   .done(function(result){
-    debugger;
     console.log(result.route.legs[0]);
     dirToSound.steps = result.route.legs[0].maneuvers.length;
     for (var i = 0; i < result.route.legs[0].maneuvers.length; i++){
@@ -283,6 +270,19 @@ function playDirections(){
 //    console.log(error);
 //  });
 //}
+//formatDirToSound();
+    //routeLine(routeLineArr); //trouble showing the line at this point. 
+    //console complains of uncaught typeError
+    //but I can call it separately after everything is loaded......
+//these go together (use timeLat...[0] w formatDir)...
+    //formatDirToSound();    
+//    var part1 = new Tone.Part(function(time, note){
+//      synth1.triggerAttackRelease(note, '16n', time);
+//    }, dirToSound.timeLatToneJSInstructionsArr[0]);
+//  
+//    var part2 = new Tone.Part(function(time, note){
+//      synth2.triggerAttackRelease(note, '16n', time);
+//    }, dirToSound.timeLngToneJSInstructionsArr[0]);
 
     
     
