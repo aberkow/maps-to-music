@@ -117,32 +117,6 @@ function mixArrays(array1, array2, destinationArray){
   });
 }
 
-function formatDirToSound() {
-  //interleave the time and Lat arrays so they alternate
-  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
-    return [value, dirToSound.latArr[index]];
-  });
-  
-  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
-    return [value, dirToSound.lngArr[index]];
-  });
-  //Chunk every 2 elements in the large array and push them in to "Instructions" 
-  //confirm what this means.....
-  //mix two arrays and return the result
-  
-  
-  Array.prototype.chunk = function(number){
-    if (!this.length){
-      return [];
-    }
-    //debugger;
-    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
-  }
-  //push the chunked arrays to "Instructions"
-  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
-  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
-}
-
 // MIDI info is in steps btwn 0 - 127
 
 function convertLatToMIDINote(lat) {
@@ -281,6 +255,32 @@ function playDirections(){
 //    var part2 = new Tone.Part(function(time, note){
 //      synth2.triggerAttackRelease(note, '16n', time);
 //    }, dirToSound.timeLngToneJSInstructionsArr[0]);
+
+//function formatDirToSound() {
+//  //interleave the time and Lat arrays so they alternate
+//  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
+//    return [value, dirToSound.latArr[index]];
+//  });
+//  
+//  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
+//    return [value, dirToSound.lngArr[index]];
+//  });
+//  //Chunk every 2 elements in the large array and push them in to "Instructions" 
+//  //confirm what this means.....
+//  //mix two arrays and return the result
+//  
+//  
+//  Array.prototype.chunk = function(number){
+//    if (!this.length){
+//      return [];
+//    }
+//    //debugger;
+//    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
+//  }
+//  //push the chunked arrays to "Instructions"
+//  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
+//  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
+//}
 
     
     
