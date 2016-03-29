@@ -24,18 +24,14 @@ $(document).ready(function() {
     var address1 = $('#address1').val();
     var address2 = $('#address2').val();
     evt.preventDefault();
-    //get the json data
     getDirections(address1, address2);
-    //formatDirToSound();
-    //routeLine(routeLineArr); //trouble showing the line at this point. 
-    //console complains of uncaught typeError
-    //but I can call it separately after everything is loaded......
   });
   
   //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
-    formatDirToSound();
-    //debugger;
+    mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
+    mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
+    
     var synth1 = new Tone.SimpleSynth().toMaster();
     //var pan1 = new Tone.Panner(0.25).toMaster();
     var synth2 = new Tone.SimpleSynth().toMaster();
@@ -43,18 +39,20 @@ $(document).ready(function() {
 
     var part1 = new Tone.Part(function(time, note){
       synth1.triggerAttackRelease(note, '16n', time);
-    }, dirToSound.timeLatToneJSInstructionsArr[0]);
+    }, dirToSound.timeLatToneJSInstructionsArr);
   
     var part2 = new Tone.Part(function(time, note){
       synth2.triggerAttackRelease(note, '16n', time);
-    }, dirToSound.timeLngToneJSInstructionsArr[0]);
+    }, dirToSound.timeLngToneJSInstructionsArr);
     
     part1.start();
     part2.start();
     Tone.Transport.start();
   });
   
-  $('.reload').on('click', function(){
+  $('.reset').on('click', function(){
+    $('#address1').val('');
+    $('#address2').val('');
     routeLineArr = [];
     dirToSound.steps = undefined;
     dirToSound.latArr = [];
@@ -62,7 +60,7 @@ $(document).ready(function() {
     dirToSound.timeArr = [];
     dirToSound.timeLatToneJSInstructionsArr = [];
     dirToSound.timeLngToneJSInstructionsArr = [];
-  })
+  });
   //map.on('click', onMapClick);
 
 });
@@ -74,12 +72,6 @@ var map = L.map('map', {
   center: [0, 0],
   zoom: 1
 });
-
-//geocode a location
-function geocode(address) {
-  MQ.geocode({map: map})
-  .search(address);
-}
 
 //plot the route as a line with markers at beginning and end.
 function routeLine(routeLineArr){
@@ -110,29 +102,23 @@ function timeStringToMS(time){
   return timeInt;
 }
 
-function formatDirToSound() {
-  //interleave the time and Lat arrays so they alternate
-  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
-    return [value, dirToSound.latArr[index]];
+/*
+  This function takes two arrays and interleaves them to produce a new array - [1, 2, 3, 4].....[a, b, c, d]......[1,a,2,b,3,c,4,d]
+  Then the array is split into groups of 2 and pushed to "Instructions"
+  [[1,a], [2,b].... ]
+*/
+function mixArrays(array1, array2, destinationArray){
+  if(array1.length !== array2.length){
+    throw new Error('Arrays are not the same length.')
+  } 
+  return array1.map(function(currentValue, index){
+    destinationArray.push([currentValue, array2[index]]);
+    return [currentValue, array2[index]]; 
   });
-  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
-    return [value, dirToSound.lngArr[index]];
-  });
-  //Chunk every 2 elements in the large array and push them in to "Instructions" 
-  //confirm what this means.....
-  Array.prototype.chunk = function(number){
-    if (!this.length){
-      return [];
-    }
-    //debugger;
-    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
-  }
-  //push the chunked arrays to "Instructions"
-  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
-  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
 }
 
 // MIDI info is in steps btwn 0 - 127
+
 function convertLatToMIDINote(lat) {
   if (lat >= -90.0 && lat <= 90.0) {
     return parseInt((parseInt(lat, 10) + 90) / 180 * 127);
@@ -148,8 +134,8 @@ function convertLngToMIDINote(lng) {
     console.log('Please enter a number between -180.0 and 180.0');
   }  
 }
-/*get function*/
 
+/*get function*/
 //function to get directions. returns json obj access @ results.route etc
 function getDirections(address1, address2){
   var request = {
@@ -223,6 +209,12 @@ function playDirections(){
   })
 }
 
+
+//geocode a location
+//function geocode(address) {
+//  MQ.geocode({map: map})
+//  .search(address);
+//}
 //var getRequest = function(address){
 //  var request = {
 //    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
@@ -249,6 +241,45 @@ function playDirections(){
 //  .fail(function(jqXHR, error){
 //    console.log(error);
 //  });
+//}
+//formatDirToSound();
+    //routeLine(routeLineArr); //trouble showing the line at this point. 
+    //console complains of uncaught typeError
+    //but I can call it separately after everything is loaded......
+//these go together (use timeLat...[0] w formatDir)...
+    //formatDirToSound();    
+//    var part1 = new Tone.Part(function(time, note){
+//      synth1.triggerAttackRelease(note, '16n', time);
+//    }, dirToSound.timeLatToneJSInstructionsArr[0]);
+//  
+//    var part2 = new Tone.Part(function(time, note){
+//      synth2.triggerAttackRelease(note, '16n', time);
+//    }, dirToSound.timeLngToneJSInstructionsArr[0]);
+
+//function formatDirToSound() {
+//  //interleave the time and Lat arrays so they alternate
+//  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
+//    return [value, dirToSound.latArr[index]];
+//  });
+//  
+//  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
+//    return [value, dirToSound.lngArr[index]];
+//  });
+//  //Chunk every 2 elements in the large array and push them in to "Instructions" 
+//  //confirm what this means.....
+//  //mix two arrays and return the result
+//  
+//  
+//  Array.prototype.chunk = function(number){
+//    if (!this.length){
+//      return [];
+//    }
+//    //debugger;
+//    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
+//  }
+//  //push the chunked arrays to "Instructions"
+//  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
+//  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
 //}
 
     
