@@ -36,7 +36,6 @@ $(document).ready(function() {
   $('.tone').on('click', function() {
     mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
     mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
-    //formatDirToSound();
     //debugger;
     var synth1 = new Tone.SimpleSynth().toMaster();
     //var pan1 = new Tone.Panner(0.25).toMaster();
@@ -45,18 +44,28 @@ $(document).ready(function() {
 
     var part1 = new Tone.Part(function(time, note){
       synth1.triggerAttackRelease(note, '16n', time);
-    }, dirToSound.timeLatToneJSInstructionsArr[0]);
+    }, dirToSound.timeLatToneJSInstructionsArr);
   
     var part2 = new Tone.Part(function(time, note){
       synth2.triggerAttackRelease(note, '16n', time);
-    }, dirToSound.timeLngToneJSInstructionsArr[0]);
-    
+    }, dirToSound.timeLngToneJSInstructionsArr);
     part1.start();
     part2.start();
     Tone.Transport.start();
+//these go together (use timeLat...[0] w formatDir)...
+    //formatDirToSound();    
+//    var part1 = new Tone.Part(function(time, note){
+//      synth1.triggerAttackRelease(note, '16n', time);
+//    }, dirToSound.timeLatToneJSInstructionsArr[0]);
+//  
+//    var part2 = new Tone.Part(function(time, note){
+//      synth2.triggerAttackRelease(note, '16n', time);
+//    }, dirToSound.timeLngToneJSInstructionsArr[0]);
   });
   
   $('.reset').on('click', function(){
+    $('#address1').val('');
+    $('#address2').val('');
     routeLineArr = [];
     dirToSound.steps = undefined;
     dirToSound.latArr = [];
@@ -76,12 +85,6 @@ var map = L.map('map', {
   center: [0, 0],
   zoom: 1
 });
-
-//geocode a location
-function geocode(address) {
-  MQ.geocode({map: map})
-  .search(address);
-}
 
 //plot the route as a line with markers at beginning and end.
 function routeLine(routeLineArr){
@@ -123,7 +126,7 @@ function mixArrays(array1, array2, destinationArray){
   } 
   return array1.map(function(currentValue, index){
     destinationArray.push([currentValue, array2[index]]);
-    return [currentValue, array2[index]];
+    return [currentValue, array2[index]]; 
   });
 }
 
@@ -155,6 +158,8 @@ function formatDirToSound() {
 }
 
 // MIDI info is in steps btwn 0 - 127
+
+
 function convertLatToMIDINote(lat) {
   if (lat >= -90.0 && lat <= 90.0) {
     return parseInt((parseInt(lat, 10) + 90) / 180 * 127);
@@ -170,8 +175,8 @@ function convertLngToMIDINote(lng) {
     console.log('Please enter a number between -180.0 and 180.0');
   }  
 }
-/*get function*/
 
+/*get function*/
 //function to get directions. returns json obj access @ results.route etc
 function getDirections(address1, address2){
   var request = {
@@ -186,6 +191,7 @@ function getDirections(address1, address2){
     type: 'GET'
   })
   .done(function(result){
+    debugger;
     console.log(result.route.legs[0]);
     dirToSound.steps = result.route.legs[0].maneuvers.length;
     for (var i = 0; i < result.route.legs[0].maneuvers.length; i++){
@@ -245,6 +251,12 @@ function playDirections(){
   })
 }
 
+
+//geocode a location
+//function geocode(address) {
+//  MQ.geocode({map: map})
+//  .search(address);
+//}
 //var getRequest = function(address){
 //  var request = {
 //    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
