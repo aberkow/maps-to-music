@@ -20,6 +20,8 @@ var dirToSound = {
 $(document).ready(function() {
   //tester to add a marker to the map. Uncomment if things get weird.
   //L.marker([50.5, 30.5]).addTo(map);
+  $('.modal').hide();
+  
   $('#panel').on('submit', function(evt){
     var address1 = $('#address1').val();
     var address2 = $('#address2').val();
@@ -66,11 +68,14 @@ $(document).ready(function() {
     clearProgressBar();
   });
   
-//  $('.progTest').on('click', function(){
-//    $('.progress-bar__content').animate({
-//      width: "100%"
-//    }, time);
-//  });
+  $('.info').on('click', function(){
+    $('.modal').show();
+  });
+  
+  $('.modal__button').on('click', function(){
+    $('.modal').hide();
+  });
+  
 });
 
 /*map functions*/
