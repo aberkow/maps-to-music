@@ -6,8 +6,13 @@
 //  });
 
 var marker = L.marker();
+var startMarker;
+var endMarker;
+var polyLine;
+var layerGroup;
 var time;
 var routeLineArr = [];//array of points for the route line overlay
+var markerArr = [];
 var dirToSound = {
   steps: undefined,
   timeArr: [], //becomes time argument in polysynth/part
@@ -53,6 +58,7 @@ $(document).ready(function() {
   $('.reset').on('click', function(){
     $('#address1').val('');
     $('#address2').val('');
+    clearRouteLine();
     routeLineArr = [];
     dirToSound.steps = undefined;
     dirToSound.latArr = [];
@@ -77,11 +83,24 @@ var map = L.map('map', {
 function routeLine(routeLineArr){
   var startMarker = L.marker(routeLineArr[0]);
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
-  var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0}).addTo(map);
+  var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0});
+  //var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0}).addTo(map);
+  var layerGroup = L.layerGroup([startMarker, endMarker, polyLine]);
+  debugger;
+  console.log(layerGroup);
+  layerGroup.addTo(map);
   //find a way to add other markers back to map.
-  startMarker.addTo(map);
-  endMarker.addTo(map);
+//  startMarker.addTo(map);
+//  endMarker.addTo(map);
   map.fitBounds(polyLine.getBounds());  
+}
+
+function clearRouteLine(){
+  for(i in map._layers) {
+    if((map._layers[i]._path != undefined) || (map._layers[i]._latlng != undefined)) {
+      map.removeLayer(map._layers[i]);
+    } 
+  }
 }
 
 //mouseEventToLatLng  - Returns the geographical coordinates of the point the mouse clicked on given the click's event object.
@@ -91,6 +110,7 @@ function routeLine(routeLineArr){
       .setLatLng(evt.latlng)
       .addTo(map);
   }  
+
 
 /*helper functions*/
 function timeStringToMS(time){
@@ -282,7 +302,19 @@ function playDirections(){
 //  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
 //}
 
-    
+//function clearMap() {
+//    for(i in map._layers) {
+//        if(map._layers[i]._path != undefined) {
+//            try {
+//                map.removeLayer(map._layers[i]);
+//            }
+//            catch(e) {
+//                console.log("problem with " + e + map._layers[i]);
+//            }
+//        }
+//    }
+//}
+
     
 
 
