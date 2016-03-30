@@ -36,6 +36,12 @@ html, body {
   display: inline-block;
 }
 
+#address1, #address2 {
+  font-size: 1.5rem;
+  font-family: 'Hind Siliguri', sans-serif;
+  box-shadow: 3px 3px 2px darkgrey;
+}
+
 #address2 {
   margin: 0 1rem;
 }
@@ -43,16 +49,21 @@ html, body {
 .controls {
   display: inline-block;
 }
-.tone, .reload {
-/*
-  margin-top: 2rem;
-  margin-left: 2rem;
-*/
+
+#submit, .tone, .reset {
   color: black;
   opacity: 0.6;
+  padding: 0 0.5rem;
   font-size: 2rem;
+  font-family: 'Hind Siliguri', sans-serif;
+  background-color: azure;
+  border: 1px solid azure;
+  box-shadow: 3px 3px 2px black;
 }
 
+.tone, .reset {
+  margin-left: 1rem;
+}
 
 #map {
   height: 25rem;
