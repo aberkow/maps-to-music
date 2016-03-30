@@ -131,3 +131,12 @@ html, body {
   margin: 2rem auto;
   font-family: 'Hind Siliguri', sans-serif;
 }
+.routes {
+  background-color: azure;
+  //margin: 1rem 0.5rem;
+}
+
+.routes__choice {
+  padding: 1rem 0.5rem;
+  font-size: 2rem;
+}
