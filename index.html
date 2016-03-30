@@ -34,12 +34,15 @@
     <div class="controls">
       <button class="tone">Play</button>
       <button class="reset">Reset</button>
-<!--      <span id="timer"></span>-->
+      <button class="info">Info</button>
     </div>
     <div class="progress-bar">
       <span class="progress-bar__content"></span>
     </div>
-    
+    <div class="modal">
+      <p class="modal__text">This is a <a href="https://en.wikipedia.org/wiki/Sonification" class="modal__text-link" target="_blank">sonified</a> map of the world. In short, sonification is the process of turning data into sound. Sonar is a good example. If you type in any two cities you can drive to and press play. You'll hear the directions "performed" by a pair of synthesizers. They get their instructions from the latitude, longitude, and time of every change in direction.</p>
+      <button class="modal__button">Close</button>
+    </div>
  <div id="map"></div>
   
   
@@ -47,23 +50,7 @@
     
   </footer>
   </section>
-   
 
-
-
-<!--
-<header class="header">
-  
-</header>
-
-<section class="main">
-  <div id="map"></div>
-</section>
-
-<footer class="footer">
-  
-</footer>
--->
 <!--Scripts - Mapquest, ToneJS, etc  -->
 <!--Leaflet map plugin  -->
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script> 
@@ -74,7 +61,10 @@
 <!--  <script src="http://www.mapquestapi.com/sdk/js/v7.2.s/mqa.toolkit.js?key=HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL"></script>-->
 <!-- ToneJS -->
   <script src="build/node_modules/tone/build/Tone.min.js"></script>
+<!--jQuery UI and jQuery  -->
+  <script   src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"   integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw="   crossorigin="anonymous"></script>  
   <script src="http://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>
+<!--My JS file  -->
   <script src="js/app.js"></script> 
 </body>
 </html>
