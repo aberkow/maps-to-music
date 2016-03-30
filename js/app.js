@@ -1,15 +1,10 @@
-//var poi = new MQA.Poi({lat: 39.743943, lng: -105.020089});
- //tester request 
-//  $.getJSON('http://www.mapquestapi.com/geocoding/v1/address?key=HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL&location=Lancaster,PA', function(data){
-//    var data = data.results;
-//    console.log(data);
-//  });
-
+//initialize a map
+var map = L.map('map', {
+  layers: MQ.mapLayer(),
+  center: [0, 0],
+  zoom: 1
+});
 var marker = L.marker();
-var startMarker;
-var endMarker;
-var polyLine;
-var layerGroup;
 var time;
 var routeLineArr = [];//array of points for the route line overlay
 var markerArr = [];
@@ -23,16 +18,16 @@ var dirToSound = {
 }
 
 $(document).ready(function() {
-  //tester to add a marker to the map.
+  //tester to add a marker to the map. Uncomment if things get weird.
   //L.marker([50.5, 30.5]).addTo(map);
   $('#panel').on('submit', function(evt){
     var address1 = $('#address1').val();
     var address2 = $('#address2').val();
+    //var countDown = setInterval(timer, 10);
     evt.preventDefault();
     getDirections(address1, address2);
   });
   
-  //tester to make sure I'm not crazy - can be removed later
   $('.tone').on('click', function() {
     mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
     mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
@@ -58,43 +53,30 @@ $(document).ready(function() {
   $('.reset').on('click', function(){
     $('#address1').val('');
     $('#address2').val('');
-    clearRouteLine();
-    routeLineArr = [];
+    routeLineArr.length = 0;
     dirToSound.steps = undefined;
-    dirToSound.latArr = [];
-    dirToSound.lngArr = [];
-    dirToSound.timeArr = [];
-    dirToSound.timeLatToneJSInstructionsArr = [];
-    dirToSound.timeLngToneJSInstructionsArr = [];
+    dirToSound.latArr.length = 0;
+    dirToSound.lngArr.length = 0;
+    dirToSound.timeArr.length = 0;
+    dirToSound.timeLatToneJSInstructionsArr.length = 0;
+    dirToSound.timeLngToneJSInstructionsArr.length = 0;
+    clearRouteLine();
   });
-  //map.on('click', onMapClick);
-
 });
 
 /*map functions*/
-//initialize a map
-var map = L.map('map', {
-  layers: MQ.mapLayer(),
-  center: [0, 0],
-  zoom: 1
-});
-
 //plot the route as a line with markers at beginning and end.
 function routeLine(routeLineArr){
   var startMarker = L.marker(routeLineArr[0]);
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
   var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0});
-  //var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0}).addTo(map);
   var layerGroup = L.layerGroup([startMarker, endMarker, polyLine]);
-  debugger;
   console.log(layerGroup);
   layerGroup.addTo(map);
-  //find a way to add other markers back to map.
-//  startMarker.addTo(map);
-//  endMarker.addTo(map);
   map.fitBounds(polyLine.getBounds());  
 }
 
+//clear the markers and route line from the map by accessing properties of the map directly
 function clearRouteLine(){
   for(i in map._layers) {
     if((map._layers[i]._path != undefined) || (map._layers[i]._latlng != undefined)) {
@@ -111,14 +93,12 @@ function clearRouteLine(){
       .addTo(map);
   }  
 
-
 /*helper functions*/
+//shorten the times from the GET request by 1/1000
 function timeStringToMS(time){
   var timeArr = time.split(':');
   var timeString = timeArr[0].concat(timeArr[1]).concat(timeArr[2]);
   var timeInt = parseInt(timeString, 10) / 1000;
-  //debugger;   
-  //console.log(timeInt);
   return timeInt;
 }
 
@@ -136,6 +116,16 @@ function mixArrays(array1, array2, destinationArray){
     return [currentValue, array2[index]]; 
   });
 }
+
+//function timer(){
+//  time -= 1;
+//  if (time <= 0){
+//    clearInterval(countDown);
+//    return;
+//  }
+//  //document.getElementById('timer').innerHTML
+//  $('#timer').html(time + " secs");
+//}
 
 // MIDI info is in steps btwn 0 - 127
 
@@ -172,6 +162,7 @@ function getDirections(address1, address2){
   .done(function(result){
     console.log(result.route.legs[0]);
     dirToSound.steps = result.route.legs[0].maneuvers.length;
+    time = result.route.legs[0].time;
     for (var i = 0; i < result.route.legs[0].maneuvers.length; i++){
       routeLineArr.push(result.route.legs[0].maneuvers[i].startPoint);
       dirToSound.latArr.push(result.route.legs[0].maneuvers[i].startPoint.lat);
@@ -185,7 +176,7 @@ function getDirections(address1, address2){
   });
 }
 
-/*sound functions*/
+/*sound functions try some different synths etc....*/
 function quickSynth(freq){
   var synth = new Tone.SimpleSynth().toMaster();
   synth.triggerAttackRelease(freq, '8n');               
@@ -228,97 +219,3 @@ function playDirections(){
     synth.triggerAttackRelease(note, "8n", time);
   })
 }
-
-
-//geocode a location
-//function geocode(address) {
-//  MQ.geocode({map: map})
-//  .search(address);
-//}
-//var getRequest = function(address){
-//  var request = {
-//    key: 'HXvKIUqt6UDLbQxrqm9hV2Gds65G8QbL',
-//    location: address
-//  };
-//  $.ajax({
-//    url: 'http://www.mapquestapi.com/geocoding/v1/address?',
-//    data: request,
-//    dataType: 'JSON',
-//    type: "GET"
-//  })
-//  .done(function(result){
-//   console.log(result.results[0].locations[0]); console.log(result.results[0].locations[0].latLng.lat);
-//    console.log(result.results[0].locations[0].latLng.lng);
-//    //debugger;
-//    var lat = result.results[0].locations[0].latLng.lat;
-//    var lng = result.results[0].locations[0].latLng.lng;
-//    //quickSynth(lat);
-//    //testSynth(lat);
-//    //quickFMSynth(lat, lng);
-//    polySynth(lat, lng);
-//    //debugger;
-//  })
-//  .fail(function(jqXHR, error){
-//    console.log(error);
-//  });
-//}
-//formatDirToSound();
-    //routeLine(routeLineArr); //trouble showing the line at this point. 
-    //console complains of uncaught typeError
-    //but I can call it separately after everything is loaded......
-//these go together (use timeLat...[0] w formatDir)...
-    //formatDirToSound();    
-//    var part1 = new Tone.Part(function(time, note){
-//      synth1.triggerAttackRelease(note, '16n', time);
-//    }, dirToSound.timeLatToneJSInstructionsArr[0]);
-//  
-//    var part2 = new Tone.Part(function(time, note){
-//      synth2.triggerAttackRelease(note, '16n', time);
-//    }, dirToSound.timeLngToneJSInstructionsArr[0]);
-
-//function formatDirToSound() {
-//  //interleave the time and Lat arrays so they alternate
-//  var timeLatCoordinates = $.map(dirToSound.timeArr, function (value, index){
-//    return [value, dirToSound.latArr[index]];
-//  });
-//  
-//  var timeLngCoordinates = $.map(dirToSound.timeArr, function (value, index){
-//    return [value, dirToSound.lngArr[index]];
-//  });
-//  //Chunk every 2 elements in the large array and push them in to "Instructions" 
-//  //confirm what this means.....
-//  //mix two arrays and return the result
-//  
-//  
-//  Array.prototype.chunk = function(number){
-//    if (!this.length){
-//      return [];
-//    }
-//    //debugger;
-//    return [this.slice(0, number)].concat(this.slice(number).chunk(number));
-//  }
-//  //push the chunked arrays to "Instructions"
-//  dirToSound.timeLatToneJSInstructionsArr.push(timeLatCoordinates.chunk(2));
-//  dirToSound.timeLngToneJSInstructionsArr.push(timeLngCoordinates.chunk(2));
-//}
-
-//function clearMap() {
-//    for(i in map._layers) {
-//        if(map._layers[i]._path != undefined) {
-//            try {
-//                map.removeLayer(map._layers[i]);
-//            }
-//            catch(e) {
-//                console.log("problem with " + e + map._layers[i]);
-//            }
-//        }
-//    }
-//}
-
-    
-
-
-
-
-
-
