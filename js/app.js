@@ -48,11 +48,13 @@ $(document).ready(function() {
     part1.start();
     part2.start();
     Tone.Transport.start();
+    progressBar();
   });
   
   $('.reset').on('click', function(){
     $('#address1').val('');
     $('#address2').val('');
+    time = 0;
     routeLineArr.length = 0;
     dirToSound.steps = undefined;
     dirToSound.latArr.length = 0;
@@ -61,7 +63,14 @@ $(document).ready(function() {
     dirToSound.timeLatToneJSInstructionsArr.length = 0;
     dirToSound.timeLngToneJSInstructionsArr.length = 0;
     clearRouteLine();
+    clearProgressBar();
   });
+  
+//  $('.progTest').on('click', function(){
+//    $('.progress-bar__content').animate({
+//      width: "100%"
+//    }, time);
+//  });
 });
 
 /*map functions*/
@@ -83,6 +92,10 @@ function clearRouteLine(){
       map.removeLayer(map._layers[i]);
     } 
   }
+}
+
+function clearProgressBar(){
+  $('.progress-bar__content').css({'width': 0});
 }
 
 //mouseEventToLatLng  - Returns the geographical coordinates of the point the mouse clicked on given the click's event object.
@@ -117,15 +130,11 @@ function mixArrays(array1, array2, destinationArray){
   });
 }
 
-//function timer(){
-//  time -= 1;
-//  if (time <= 0){
-//    clearInterval(countDown);
-//    return;
-//  }
-//  //document.getElementById('timer').innerHTML
-//  $('#timer').html(time + " secs");
-//}
+function progressBar(){
+  $('.progress-bar__content').animate({
+    width: "100%"
+  }, time);
+}
 
 // MIDI info is in steps btwn 0 - 127
 
