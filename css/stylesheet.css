@@ -92,7 +92,7 @@ html, body {
   margin: 0;
 }
 
-.modal__text-link {
+.modal__text-link, .footer__content-link {
   text-decoration: none;
   color: blue;
   opacity: 0.6;
@@ -114,3 +114,20 @@ html, body {
 #map {
   height: 25rem;
   width: 100%;
+}
+
+.footer {
+  margin-top: 0;
+  height: 9rem;
+  background-color: #555;
+}
+
+.footer__content {
+  text-align: center;
+  padding-top: 4rem;
+}
+
+.footer__content-text {
+  margin: 2rem auto;
+  font-family: 'Hind Siliguri', sans-serif;
+}
