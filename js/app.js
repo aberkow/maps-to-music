@@ -89,12 +89,11 @@ $(document).ready(function() {
 /*map functions*/
 //plot the route as a line with markers at beginning and end.
 function routeLine(routeLineArr){
+  var i;
   var startMarker = L.marker(routeLineArr[0]);
-  //var middleMarker = L.marker();
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
   var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0});
-  var layerGroup = L.layerGroup([startMarker, middleMarker, endMarker, polyLine]);
-  //var layerGroup = L.layerGroup([startMarker, middleMarker, endMarker, polyLine]);
+  var layerGroup = L.layerGroup([startMarker, endMarker, polyLine]);
   console.log(layerGroup);
   layerGroup.addTo(map);
   map.fitBounds(polyLine.getBounds());  
