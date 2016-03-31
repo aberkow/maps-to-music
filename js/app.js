@@ -4,6 +4,7 @@ var map = L.map('map', {
   center: [0, 0],
   zoom: 1
 });
+var audioContext = new (window.AudioContext || window.webkitAudioContext)();
 var marker = L.marker();
 var time;
 var routeLineArr = [];//array of points for the route line overlay
@@ -34,17 +35,23 @@ $(document).ready(function() {
     mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
     mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
     
-    var synth1 = new Tone.SimpleSynth().toMaster();
-    //var pan1 = new Tone.Panner(0.25).toMaster();
-    var synth2 = new Tone.SimpleSynth().toMaster();
-    //var pan2 = new Tone.Panner(0.75).toMaster();
+    //Tone.setContext(audioContext);
+    
+    debugger;
+    var synth1 = new Tone.simpleSynth().toMaster();
+    //var synth2 = tone.simpleSynth().toMaster();
+    
+    //    var synth1 = new Tone.SimpleSynth().toMaster();
+//    //var pan1 = new Tone.Panner(0.25).toMaster();
+//    var synth2 = new Tone.SimpleSynth().toMaster();
+//    //var pan2 = new Tone.Panner(0.75).toMaster();
 
     var part1 = new Tone.Part(function(time, note){
       synth1.triggerAttackRelease(note, '16n', time);
     }, dirToSound.timeLatToneJSInstructionsArr);
   
     var part2 = new Tone.Part(function(time, note){
-      synth2.triggerAttackRelease(note, '16n', time);
+      synth1.triggerAttackRelease(note, '16n', time);
     }, dirToSound.timeLngToneJSInstructionsArr);
     
     part1.start();
@@ -56,6 +63,7 @@ $(document).ready(function() {
   $('.reset').on('click', function(){
     $('#address1').val('');
     $('#address2').val('');
+    map.setView([0, 0], 1);
     time = 0;
     routeLineArr.length = 0;
     dirToSound.steps = undefined;
@@ -82,9 +90,11 @@ $(document).ready(function() {
 //plot the route as a line with markers at beginning and end.
 function routeLine(routeLineArr){
   var startMarker = L.marker(routeLineArr[0]);
+  //var middleMarker = L.marker();
   var endMarker = L.marker(routeLineArr[routeLineArr.length - 1]);
   var polyLine = L.polyline(routeLineArr, {color: 'red', smoothFactor: 1.0});
-  var layerGroup = L.layerGroup([startMarker, endMarker, polyLine]);
+  var layerGroup = L.layerGroup([startMarker, middleMarker, endMarker, polyLine]);
+  //var layerGroup = L.layerGroup([startMarker, middleMarker, endMarker, polyLine]);
   console.log(layerGroup);
   layerGroup.addTo(map);
   map.fitBounds(polyLine.getBounds());  

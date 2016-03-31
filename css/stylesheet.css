@@ -23,7 +23,7 @@ html, body {
 }
 
 .header__title-subtext {
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-family: 'Hind Siliguri', sans-serif;
   margin: 0 auto;
   color: black;
@@ -130,4 +130,35 @@ html, body {
 .footer__content-text {
   margin: 2rem auto;
   font-family: 'Hind Siliguri', sans-serif;
+}
+
+@media only screen and (max-width: 1040px){
+  #panel {
+    text-align: center;
+    margin-left: 0;
+  }
+  .controls {
+    display: block;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media only screen and (max-width: 768px){
+  .header__title-text {
+    font-size: 2rem;
+  }
+  #panel {
+    text-align: center;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
+  #address2, #submit {
+    margin-top: 0.5rem;
+  }
+  .controls {
+    display: block;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
 }
