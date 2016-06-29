@@ -22,7 +22,7 @@ $(document).ready(function() {
   //tester to add a marker to the map. Uncomment if things get weird.
   //L.marker([50.5, 30.5]).addTo(map);
   $('.modal').hide();
-  
+
   $('#panel').on('submit', function(evt){
     var address1 = $('#address1').val();
     var address2 = $('#address2').val();
@@ -30,17 +30,17 @@ $(document).ready(function() {
     evt.preventDefault();
     getDirections(address1, address2);
   });
-  
+
   $('.tone').on('click', function() {
     mixArrays(dirToSound.timeArr, dirToSound.latArr, dirToSound.timeLatToneJSInstructionsArr);
     mixArrays(dirToSound.timeArr, dirToSound.lngArr, dirToSound.timeLngToneJSInstructionsArr);
-    
+
     //Tone.setContext(audioContext);
-    
+
     debugger;
     var synth1 = new Tone.simpleSynth().toMaster();
     //var synth2 = tone.simpleSynth().toMaster();
-    
+
     //    var synth1 = new Tone.SimpleSynth().toMaster();
 //    //var pan1 = new Tone.Panner(0.25).toMaster();
 //    var synth2 = new Tone.SimpleSynth().toMaster();
@@ -49,17 +49,17 @@ $(document).ready(function() {
     var part1 = new Tone.Part(function(time, note){
       synth1.triggerAttackRelease(note, '16n', time);
     }, dirToSound.timeLatToneJSInstructionsArr);
-  
+
     var part2 = new Tone.Part(function(time, note){
       synth1.triggerAttackRelease(note, '16n', time);
     }, dirToSound.timeLngToneJSInstructionsArr);
-    
+
     part1.start();
     part2.start();
     Tone.Transport.start();
     progressBar();
   });
-  
+
   $('.reset').on('click', function(){
     $('#address1').val('');
     $('#address2').val('');
@@ -75,15 +75,15 @@ $(document).ready(function() {
     clearRouteLine();
     clearProgressBar();
   });
-  
+
   $('.info').on('click', function(){
     $('.modal').show();
   });
-  
+
   $('.modal__button').on('click', function(){
     $('.modal').hide();
   });
-  
+
 });
 
 /*map functions*/
@@ -96,7 +96,7 @@ function routeLine(routeLineArr){
   var layerGroup = L.layerGroup([startMarker, endMarker, polyLine]);
   console.log(layerGroup);
   layerGroup.addTo(map);
-  map.fitBounds(polyLine.getBounds());  
+  map.fitBounds(polyLine.getBounds());
 }
 
 //clear the markers and route line from the map by accessing properties of the map directly
@@ -104,7 +104,7 @@ function clearRouteLine(){
   for(i in map._layers) {
     if((map._layers[i]._path != undefined) || (map._layers[i]._latlng != undefined)) {
       map.removeLayer(map._layers[i]);
-    } 
+    }
   }
 }
 
@@ -118,7 +118,7 @@ function clearProgressBar(){
     marker
       .setLatLng(evt.latlng)
       .addTo(map);
-  }  
+  }
 
 /*helper functions*/
 //shorten the times from the GET request by 1/1000
@@ -137,10 +137,10 @@ function timeStringToMS(time){
 function mixArrays(array1, array2, destinationArray){
   if(array1.length !== array2.length){
     throw new Error('Arrays are not the same length.')
-  } 
+  }
   return array1.map(function(currentValue, index){
     destinationArray.push([currentValue, array2[index]]);
-    return [currentValue, array2[index]]; 
+    return [currentValue, array2[index]];
   });
 }
 
@@ -157,7 +157,7 @@ function convertLatToMIDINote(lat) {
     return parseInt((parseInt(lat, 10) + 90) / 180 * 127);
   } else {
     console.log('Please enter a number between -90 and 90');
-  } 
+  }
 }
 
 function convertLngToMIDINote(lng) {
@@ -165,7 +165,7 @@ function convertLngToMIDINote(lng) {
     return parseInt((parseInt(lng, 10) + 180) / 360 * 127);
   } else {
     console.log('Please enter a number between -180.0 and 180.0');
-  }  
+  }
 }
 
 /*get function*/
@@ -202,7 +202,7 @@ function getDirections(address1, address2){
 /*sound functions try some different synths etc....*/
 function quickSynth(freq){
   var synth = new Tone.SimpleSynth().toMaster();
-  synth.triggerAttackRelease(freq, '8n');               
+  synth.triggerAttackRelease(freq, '8n');
   }
 
 function testSynth(freq){
