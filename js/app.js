@@ -39,7 +39,7 @@ $(document).ready(function() {
 
     debugger;
     var synth1 = new Tone.simpleSynth().toMaster();
-    //var synth2 = tone.simpleSynth().toMaster();
+    var synth2 = tone.simpleSynth().toMaster();
 
     //    var synth1 = new Tone.SimpleSynth().toMaster();
 //    //var pan1 = new Tone.Panner(0.25).toMaster();
@@ -51,7 +51,7 @@ $(document).ready(function() {
     }, dirToSound.timeLatToneJSInstructionsArr);
 
     var part2 = new Tone.Part(function(time, note){
-      synth1.triggerAttackRelease(note, '16n', time);
+      synth2.triggerAttackRelease(note, '16n', time);
     }, dirToSound.timeLngToneJSInstructionsArr);
 
     part1.start();
