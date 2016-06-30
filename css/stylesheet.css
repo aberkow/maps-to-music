@@ -23,7 +23,7 @@ html, body {
 }
 
 .header__title-subtext {
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-family: 'Hind Siliguri', sans-serif;
   margin: 0 auto;
   color: black;
@@ -83,10 +83,30 @@ html, body {
   overflow: hidden;
 }
 
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal__content {
+  position: fixed;
+  top: 50%;
+  margin: 0 2rem;
+  background-color: gray;
+  padding: 20px;
+
+}
+
 .modal__text {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-family: 'Hind Siliguri', sans-serif;
-  color: black;
+  color: azure;
   opacity: 0.6;
   padding: 0 1rem;
   margin: 0;
@@ -130,4 +150,35 @@ html, body {
 .footer__content-text {
   margin: 2rem auto;
   font-family: 'Hind Siliguri', sans-serif;
+}
+
+@media only screen and (max-width: 1040px){
+  #panel {
+    text-align: center;
+    margin-left: 0;
+  }
+  .controls {
+    display: block;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media only screen and (max-width: 768px){
+  .header__title-text {
+    font-size: 2rem;
+  }
+  #panel {
+    text-align: center;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
+  #address2, #submit {
+    margin-top: 0.5rem;
+  }
+  .controls {
+    display: block;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
 }
