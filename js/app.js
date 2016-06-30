@@ -20,7 +20,7 @@ var dirToSound = {
 $(document).ready(function() {
   //tester to add a marker to the map. Uncomment if things get weird.
   //L.marker([50.5, 30.5]).addTo(map);
-  $('.modal').hide();
+  $('.modal').show();
 
   $('#panel').on('submit', function(evt){
     var address1 = $('#address1').val();
