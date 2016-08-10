@@ -21,6 +21,8 @@
       Maps to Music: Hear where you're going.
     </p>
     <p class="header__title-subtext">
+      This is a <a href="https://en.wikipedia.org/wiki/Sonification" class="modal__text-link" target="_blank">sonified</a> map of the world. In short, sonification is the process of turning data into sound. Sonar is a good example. If you type in any two cities you can drive to and press play. You'll hear the directions "performed" by a pair of synthesizers. They get their instructions from the Mapquest API. Each direction's latitude, longitude, and duration between points is interpreted by the synths. Latitude and longitude are sent as frequencies in Hz. The time between directions is 1000x faster than real-life. Travel from New York to Boston in about 6 seconds!
+      <br /><br />
       Choose any two cities you can drive to and click on "Show Route" to see the path. Then press "Play" to hear what your directions sound like. Here are a few routes to try: New York, NY to Philadelphia, PA, Moscow, Russia to Beijing China, Johannesburg, South Africa to Nairobi, Kenya.
     </p>
   </div>
@@ -39,12 +41,7 @@
     <div class="progress-bar">
       <span class="progress-bar__content"></span>
     </div>
-    <div id="infoModal" class="modal">
-      <div class="modal__content">
-        <p class="modal__text">This is a <a href="https://en.wikipedia.org/wiki/Sonification" class="modal__text-link" target="_blank">sonified</a> map of the world. In short, sonification is the process of turning data into sound. Sonar is a good example. If you type in any two cities you can drive to and press play. You'll hear the directions "performed" by a pair of synthesizers. They get their instructions from the latitude, longitude, and time of every change in direction. To switch routes, just press reset.</p>
-        <button class="modal__button">Close</button>
-      </div>
-    </div>
+    
  <div id="map"></div>
 
 
